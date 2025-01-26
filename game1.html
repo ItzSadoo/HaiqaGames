@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glamour Clicker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fce4ec;
+            color: #880e4f;
+            margin: 0;
+            padding: 0;
+        }
+        .game-container {
+            margin-top: 50px;
+        }
+        .mirror {
+            width: 150px;
+            height: 150px;
+            background-color: #ffffff;
+            border: 5px solid #880e4f;
+            border-radius: 50%;
+            display: inline-block;
+            position: relative;
+            margin: 20px;
+            cursor: pointer;
+        }
+        .mirror img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+        }
+        #score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+        .start-button {
+            background-color: #d81b60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .start-button:hover {
+            background-color: #ad1457;
+        }
+    </style>
+</head>
+<body>
+    <h1>Glamour Clicker</h1>
+    <p>Help make customers glamorous by clicking on the mirrors!</p>
+    <div id="game" class="game-container">
+        <button id="startButton" class="start-button">Start Game</button>
+    </div>
+    <div id="score">Score: 0</div>
+
+    <script>
+        const gameContainer = document.getElementById('game');
+        const scoreDisplay = document.getElementById('score');
+        const startButton = document.getElementById('startButton');
+
+        let score = 0;
+        let gameInterval;
+
+        function createMirror() {
+            const mirror = document.createElement('div');
+            mirror.classList.add('mirror');
+            mirror.style.top = Math.random() * 400 + 'px';
+            mirror.style.left = Math.random() * 400 + 'px';
+
+            const image = document.createElement('img');
+            image.src = 'https://via.placeholder.com/150/FFC0CB/000000?text=Makeup'; // Placeholder image
+            mirror.appendChild(image);
+
+            mirror.addEventListener('click', () => {
+                score++;
+                scoreDisplay.textContent = `Score: ${score}`;
+                image.src = 'https://via.placeholder.com/150/00FF00/000000?text=Glamorous'; // Change image on click
+            });
+
+            gameContainer.appendChild(mirror);
+
+            setTimeout(() => {
+                if (mirror.parentElement) {
+                    mirror.remove();
+                }
+            }, 2000);
+        }
+
+        function startGame() {
+            score = 0;
+            scoreDisplay.textContent = `Score: ${score}`;
+            startButton.style.display = 'none';
+
+            gameInterval = setInterval(() => {
+                createMirror();
+            }, 1000);
+
+            setTimeout(() => {
+                clearInterval(gameInterval);
+                alert(`Game over! Your final score is: ${score}`);
+                startButton.style.display = 'inline-block';
+            }, 30000); // Game duration: 30 seconds
+        }
+
+        startButton.addEventListener('click', startGame);
+    </script>
+</body>
+</html>

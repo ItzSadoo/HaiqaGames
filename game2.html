@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Makeup Memory Match</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fce4ec;
+            color: #880e4f;
+            margin: 0;
+            padding: 0;
+        }
+        .memory-game {
+            display: grid;
+            grid-template-columns: repeat(4, 100px);
+            grid-gap: 20px;
+            justify-content: center;
+            margin-top: 50px;
+        }
+        .memory-card {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform: scale(1);
+            transform-style: preserve-3d;
+            transition: transform 0.5s;
+            cursor: pointer;
+        }
+        .memory-card.flip {
+            transform: rotateY(180deg);
+        }
+        .memory-card .front,
+        .memory-card .back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 10px;
+        }
+        .memory-card .front {
+            background-color: #d81b60;
+            color: white;
+            font-size: 20px;
+            line-height: 100px;
+            text-align: center;
+        }
+        .memory-card .back {
+            background-size: cover;
+            background-position: center;
+            transform: rotateY(180deg);
+        }
+        .start-button {
+            background-color: #d81b60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .start-button:hover {
+            background-color: #ad1457;
+        }
+    </style>
+</head>
+<body>
+    <h1>Makeup Memory Match</h1>
+    <p>Flip the cards and match all the pairs!</p>
+    <button class="start-button" id="startButton">Start Game</button>
+    <div class="memory-game" id="memoryGame"></div>
+
+    <script>
+        const makeupImages = [
+            'https://i.imgur.com/k6YSaNu.png', // Lipstick
+            'https://i.imgur.com/BITsRD0.png', // Blush
+            'https://i.imgur.com/13rFnDz.png', // Eyeliner
+            'https://i.imgur.com/Sv9Oseg.png', // Brush
+            'https://i.imgur.com/vdqzPcA.png', // Nail Polish
+            'https://i.imgur.com/pFvUAi5.png', // Foundation
+        ];
+
+        const memoryGame = document.getElementById('memoryGame');
+        const startButton = document.getElementById('startButton');
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        function createMemoryCards() {
+            const cardImages = [...makeupImages, ...makeupImages]; // Duplicate images for pairs
+            cardImages.sort(() => 0.5 - Math.random()); // Shuffle cards
+
+            memoryGame.innerHTML = '';
+            matchedPairs = 0;
+
+            cardImages.forEach(image => {
+                const card = document.createElement('div');
+                card.classList.add('memory-card');
+                card.dataset.image = image;
+
+                const front = document.createElement('div');
+                front.classList.add('front');
+                front.textContent = '?';
+
+                const back = document.createElement('div');
+                back.classList.add('back');
+                back.style.backgroundImage = `url(${image})`;
+
+                card.appendChild(front);
+                card.appendChild(back);
+                memoryGame.appendChild(card);
+
+                card.addEventListener('click', flipCard);
+            });
+        }
+
+        function flipCard() {
+            if (flippedCards.length >= 2 || this.classList.contains('flip')) return;
+
+            this.classList.add('flip');
+            flippedCards.push(this);
+
+            if (flippedCards.length === 2) {
+                setTimeout(checkMatch, 1000);
+            }
+        }
+
+        function checkMatch() {
+            const [card1, card2] = flippedCards;
+            if (card1.dataset.image === card2.dataset.image) {
+                matchedPairs++;
+                if (matchedPairs === makeupImages.length) {
+                    setTimeout(() => alert('Congratulations! You matched all the pairs!'), 500);
+                }
+            } else {
+                card1.classList.remove('flip');
+                card2.classList.remove('flip');
+            }
+            flippedCards = [];
+        }
+
+        startButton.addEventListener('click', () => {
+            createMemoryCards();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #fce4ec;
+            color: #880e4f;
+            margin: 0;
+            padding: 0;
+        }
+        .quiz-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .question {
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .options button {
+            background-color: #d81b60;
+            color: white;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .options button:hover {
+            background-color: #ad1457;
+        }
+        .score {
+            margin-top: 20px;
+            font-size: 24px;
+        }
+        .start-button {
+            background-color: #d81b60;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            font-size: 18px;
+            cursor: pointer;
+        }
+        .start-button:hover {
+            background-color: #ad1457;
+        }
+    </style>
+</head>
+<body>
+    <h1>Beauty Quiz</h1>
+    <p>Test your knowledge of beauty and makeup!</p>
+    <div class="quiz-container" id="quizContainer">
+        <button class="start-button" id="startButton">Start Quiz</button>
+    </div>
+    <div class="score" id="score">Score: 0</div>
+
+    <script>
+        const quizContainer = document.getElementById('quizContainer');
+        const scoreDisplay = document.getElementById('score');
+        const startButton = document.getElementById('startButton');
+
+        const questions = [
+            {
+                question: "What is the primary use of foundation?",
+                options: ["To add color", "To moisturize", "To create an even skin tone", "To remove makeup"],
+                answer: "To create an even skin tone"
+            },
+            {
+                question: "Which tool is commonly used to apply blush?",
+                options: ["Eyelash curler", "Powder brush", "Lipstick", "Cotton swab"],
+                answer: "Powder brush"
+            },
+            {
+                question: "What is a smoky eye look?",
+                options: ["A colorful eye makeup", "A bold lipstick look", "A dark, blended eyeshadow style", "A light foundation style"],
+                answer: "A dark, blended eyeshadow style"
+            },
+            {
+                question: "What is the purpose of a makeup primer?",
+                options: ["To remove oil", "To hydrate lips", "To prepare skin for makeup", "To clean brushes"],
+                answer: "To prepare skin for makeup"
+            },
+            {
+                question: "Which product is used to color eyelashes?",
+                options: ["Lip gloss", "Mascara", "Foundation", "Blush"],
+                answer: "Mascara"
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let score = 0;
+
+        function startQuiz() {
+            score = 0;
+            currentQuestionIndex = 0;
+            scoreDisplay.textContent = `Score: ${score}`;
+            startButton.style.display = 'none';
+            showQuestion();
+        }
+
+        function showQuestion() {
+            quizContainer.innerHTML = '';
+            if (currentQuestionIndex < questions.length) {
+                const questionObj = questions[currentQuestionIndex];
+                const questionElement = document.createElement('div');
+                questionElement.classList.add('question');
+                questionElement.textContent = questionObj.question;
+
+                const optionsContainer = document.createElement('div');
+                optionsContainer.classList.add('options');
+
+                questionObj.options.forEach(option => {
+                    const optionButton = document.createElement('button');
+                    optionButton.textContent = option;
+                    optionButton.addEventListener('click', () => checkAnswer(option));
+                    optionsContainer.appendChild(optionButton);
+                });
+
+                quizContainer.appendChild(questionElement);
+                quizContainer.appendChild(optionsContainer);
+            } else {
+                showResult();
+            }
+        }
+
+        function checkAnswer(selectedOption) {
+            const correctAnswer = questions[currentQuestionIndex].answer;
+            if (selectedOption === correctAnswer) {
+                score += 10;
+                scoreDisplay.textContent = `Score: ${score}`;
+            }
+            currentQuestionIndex++;
+            showQuestion();
+        }
+
+        function showResult() {
+            quizContainer.innerHTML = `
+                <h2>Quiz Completed!</h2>
+                <p>Your final score is: ${score}</p>
+                <button class="start-button" onclick="startQuiz()">Play Again</button>
+            `;
+        }
+
+        startButton.addEventListener('click', startQuiz);
+    </script>
+</body>
+</html>
